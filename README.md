@@ -53,9 +53,7 @@ npm install
 npm start
 ```
 
-## 📷 Screenshots
 
-Add screenshots of your website here.
 
 ## 🎯 Future Enhancements
 
