@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register & Pay — TrailHive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <link rel="stylesheet" href="./css/register.css"/>
+</head>
+<body>
+
+<div class="page-bg"></div>
+<div id="loader"><div class="spinner"></div><p>Processing your payment…</p></div>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <a href="index.html" class="logo">
+    <span class="logo-icon">⛰</span>
+    <span class="logo-text">TRAILHIVE</span>
+  </a>
+  <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+</nav>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="page-badge">✦ Secure Registration ✦</div>
+    <h1 class="page-title">Book Your Adventure</h1>
+    <p class="page-sub">Fill your details, review, pay securely — and you're confirmed!</p>
+  </div>
+
+  <!-- TRIP BANNER -->
+  <div class="trip-banner" id="tripBanner">
+    <div class="trip-icon" id="bannerIcon">🏔️</div>
+    <div class="trip-det">
+      <h3 id="bannerTrip">Select a Trip</h3>
+      <p id="bannerDesc">All-inclusive guided tours with stay & meals</p>
+    </div>
+    <div class="trip-price">
+      <div class="amt" id="bannerPrice">₹—</div>
+      <div class="lbl">per person</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS STEPS -->
+  <div class="steps">
+    <div class="step active" id="s1"><div class="step-dot">1</div><div class="step-lbl">Details</div></div>
+    <div class="step" id="s2"><div class="step-dot">2</div><div class="step-lbl">Review</div></div>
+    <div class="step" id="s3"><div class="step-dot">3</div><div class="step-lbl">Confirmed</div></div>
+  </div>
+
+  <!-- ===== SCREEN 1: REGISTRATION FORM ===== -->
+  <div class="screen active" id="scForm">
+    <div class="form-card">
+      <div class="card-title">Personal Information</div>
+
+      <div class="row2">
+        <div class="field">
+          <label>First Name *</label>
+          <input type="text" id="firstName" placeholder="Rohit"/>
+          <div class="err-msg" id="errFirst">Required</div>
+        </div>
+        <div class="field">
+          <label>Last Name *</label>
+          <input type="text" id="lastName" placeholder="Kumar"/>
+          <div class="err-msg" id="errLast">Required</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Email Address *</label>
+        <input type="email" id="email" placeholder="rohit@email.com"/>
+        <div class="err-msg" id="errEmail">Enter a valid email</div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Phone Number *</label>
+          <input type="tel" id="phone" placeholder="9876543210" maxlength="10"/>
+          <div class="err-msg" id="errPhone">Enter valid 10-digit number</div>
+        </div>
+        <div class="field">
+          <label>Age *</label>
+          <input type="number" id="age" placeholder="25" min="18" max="70"/>
+          <div class="err-msg" id="errAge">Must be 18–70</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Address *</label>
+        <input type="text" id="address" placeholder="Your full address"/>
+        <div class="err-msg" id="errAddr">Required</div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Choose Trip *</label>
+          <select id="tripSelect">
+            <option value="">— Select —</option>
+            <option value="Manali Adventure|4999|🏔️">🏔️ Manali Adventure — ₹4,999</option>
+            <option value="Vrindavan Spiritual|2999|🛕">🛕 Vrindavan Spiritual — ₹2,999</option>
+            <option value="Historical India Tour|3499|🏰">🏰 Historical India Tour — ₹3,499</option>
+            <option value="Banaras Spiritual|1999|⛵">⛵ Banaras Spiritual — ₹1,999</option>
+            <option value="Red Fort Delhi|1499|🇮🇳">🇮🇳 Red Fort Delhi — ₹1,499</option>
+            <option value="Shimla Adventure|3999|🎿">🎿 Shimla Adventure — ₹3,999</option>
+            <option value="Kerala Backwaters|5999|🌿">🌿 Kerala Backwaters — ₹5,999</option>
+          </select>
+          <div class="err-msg" id="errTrip">Please select a trip</div>
+        </div>
+        <div class="field">
+          <label>No. of Travellers *</label>
+          <input type="number" id="travellers" placeholder="1" min="1" max="15" value="1"/>
+          <div class="err-msg" id="errTrav">Min 1, Max 15</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Special Requirements (Optional)</label>
+        <textarea id="notes" placeholder="Dietary needs, medical conditions, or any preferences…"></textarea>
+      </div>
+
+      <button class="btn btn-pay" onclick="goReview()">Continue to Review →</button>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 2: REVIEW & PAY ===== -->
+  <div class="screen" id="scReview">
+    <div class="form-card">
+      <div class="card-title">Review & Pay</div>
+
+      <div class="summary-row"><span class="key">Traveller</span><span class="val" id="rv-name">—</span></div>
+      <div class="summary-row"><span class="key">Email</span><span class="val" id="rv-email">—</span></div>
+      <div class="summary-row"><span class="key">Phone</span><span class="val" id="rv-phone">—</span></div>
+      <div class="summary-row"><span class="key">Address</span><span class="val" id="rv-addr">—</span></div>
+      <div class="summary-row"><span class="key">Trip</span><span class="val" id="rv-trip">—</span></div>
+      <div class="summary-row"><span class="key">Travellers</span><span class="val" id="rv-trav">—</span></div>
+
+      <div class="hr"></div>
+
+      <div class="summary-row"><span class="key">Price per Person</span><span class="val" id="rv-per">—</span></div>
+      <div class="summary-row total"><span class="key">Total Amount</span><span class="val" id="rv-total">—</span></div>
+
+      <button class="btn btn-pay" id="payBtn" onclick="startPayment()">
+        💳 Pay Securely via Razorpay
+      </button>
+      <button class="btn btn-back" onclick="goBack()">← Edit Details</button>
+
+      <div class="secure-note">
+        <i class="fas fa-lock" style="color:var(--gold);font-size:0.75rem;"></i>
+        256-bit SSL Encrypted · Powered by Razorpay
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 3: CONFIRMATION ===== -->
+  <div class="screen" id="scConfirm">
+    <div class="form-card">
+      <div class="confirm-wrap">
+        <div class="confirm-icon">✓</div>
+        <h2>Booking Confirmed! 🎉</h2>
+        <p class="confirm-sub">
+          Payment received successfully. You're all set for an unforgettable adventure!<br/>
+          A confirmation has been sent to your email.
+        </p>
+        <div class="booking-id" id="bookingId">—</div>
+        <div class="detail-box" id="confirmDetails"></div>
+        <div class="info-note">
+          🎒 Our team will contact you within 24 hours with your itinerary & trip kit.<br/>
+          📩 Check your email for detailed trip information and invoice.
+        </div>
+        <button class="btn-home" onclick="window.location.href='index.html'">← Back to Home</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wrapper -->
+
+<script>
+// ===== STATE =====
+let formData = {};
+const RAZORPAY_KEY = 'rzp_test_SpjtD92TOqXmpj';
+
+// ===== URL PRE-FILL =====
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const trip = params.get('trip');
+  const price = params.get('price');
+  if (trip) {
+    // Try to match select option
+    const sel = document.getElementById('tripSelect');
+    for (let o of sel.options) {
+      if (o.value.startsWith(trip)) { sel.value = o.value; break; }
+    }
+    updateBanner();
+  }
+});
+
+// ===== BANNER UPDATE =====
+document.getElementById('tripSelect').addEventListener('change', updateBanner);
+function updateBanner() {
+  const val = document.getElementById('tripSelect').value;
+  if (!val) return;
+  const [name, price, icon] = val.split('|');
+  const count = parseInt(document.getElementById('travellers').value)||1;
+  document.getElementById('bannerTrip').textContent = name;
+  document.getElementById('bannerIcon').textContent = icon;
+  document.getElementById('bannerPrice').textContent = '₹' + (parseInt(price)*count).toLocaleString('en-IN');
+}
+document.getElementById('travellers').addEventListener('input', updateBanner);
+
+// ===== STEP UI =====
+function setStep(n) {
+  [1,2,3].forEach(i => {
+    const el = document.getElementById('s'+i);
+    el.classList.remove('active','done');
+    const dot = el.querySelector('.step-dot');
+    if (i < n) { el.classList.add('done'); dot.textContent = '✓'; }
+    else { dot.textContent = i; }
+    if (i === n) el.classList.add('active');
+  });
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ===== VALIDATION =====
+function validate() {
+  let ok = true;
+  const rules = [
+    ['firstName', 'errFirst', v => v.trim().length > 0],
+    ['lastName',  'errLast',  v => v.trim().length > 0],
+    ['email',     'errEmail', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)],
+    ['phone',     'errPhone', v => /^\d{10}$/.test(v)],
+    ['age',       'errAge',   v => parseInt(v) >= 18 && parseInt(v) <= 70],
+    ['address',   'errAddr',  v => v.trim().length > 0],
+    ['tripSelect','errTrip',  v => v !== ''],
+    ['travellers','errTrav',  v => parseInt(v) >= 1 && parseInt(v) <= 15],
+  ];
+  rules.forEach(([id,errId,fn]) => {
+    const el = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (!fn(el.value)) {
+      el.classList.add('invalid'); err.classList.add('show'); ok = false;
+    } else {
+      el.classList.remove('invalid'); err.classList.remove('show');
+    }
+  });
+  return ok;
+}
+
+// ===== STEP 1 → 2 =====
+function goReview() {
+  if (!validate()) return;
+  const tripVal = document.getElementById('tripSelect').value;
+  const [tripName, perPerson, icon] = tripVal.split('|');
+  const count = parseInt(document.getElementById('travellers').value)||1;
+  const total = parseInt(perPerson) * count;
+
+  formData = {
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName:  document.getElementById('lastName').value.trim(),
+    name: document.getElementById('firstName').value.trim()+' '+document.getElementById('lastName').value.trim(),
+    email:     document.getElementById('email').value.trim(),
+    phone:     document.getElementById('phone').value.trim(),
+    age:       document.getElementById('age').value.trim(),
+    address:   document.getElementById('address').value.trim(),
+    trip:      tripName,
+    icon,
+    perPerson: parseInt(perPerson),
+    travellers:count,
+    notes:     document.getElementById('notes').value.trim(),
+    total,
+  };
+
+  document.getElementById('rv-name').textContent  = formData.name;
+  document.getElementById('rv-email').textContent = formData.email;
+  document.getElementById('rv-phone').textContent = formData.phone;
+  document.getElementById('rv-addr').textContent  = formData.address;
+  document.getElementById('rv-trip').textContent  = formData.trip;
+  document.getElementById('rv-trav').textContent  = count + (count>1?' persons':' person');
+  document.getElementById('rv-per').textContent   = '₹'+parseInt(perPerson).toLocaleString('en-IN');
+  document.getElementById('rv-total').textContent = '₹'+total.toLocaleString('en-IN');
+
+  setStep(2);
+  showScreen('scReview');
+}
+
+function goBack() { setStep(1); showScreen('scForm'); }
+
+// ===== RAZORPAY PAYMENT =====
+function startPayment() {
+  const btn = document.getElementById('payBtn');
+  btn.disabled = true;
+  btn.textContent = 'Opening Razorpay…';
+
+  const options = {
+    key: RAZORPAY_KEY,
+    amount: formData.total * 100,
+    currency: 'INR',
+    name: 'TrailHive',
+    description: formData.trip,
+    image: '',
+    handler: async function(response) {
+      document.getElementById('loader').classList.add('show');
+      await saveToDatabase(response.razorpay_payment_id);
+      document.getElementById('loader').classList.remove('show');
+      showConfirmation(response.razorpay_payment_id);
+    },
+    prefill: {
+      name:    formData.name,
+      email:   formData.email,
+      contact: formData.phone,
+    },
+    notes: { trip: formData.trip, travellers: formData.travellers },
+    theme: { color: '#c9a84c' },
+    modal: {
+      ondismiss: function() {
+        btn.disabled = false;
+        btn.textContent = '💳 Pay Securely via Razorpay';
+      }
+    }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.on('payment.failed', function(resp) {
+    alert('Payment failed: ' + resp.error.description);
+    btn.disabled = false;
+    btn.textContent = '💳 Pay Securely via Razorpay';
+  });
+  rzp.open();
+}
+
+// ===== SAVE TO DATABASE =====
+async function saveToDatabase(paymentId) {
+  const bookingId = 'TH-' + Date.now().toString(36).toUpperCase();
+  const payload = {
+    bookingId,
+    ...formData,
+    paymentId,
+    paymentStatus: 'paid',
+    createdAt: new Date().toISOString(),
+  };
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    formData.bookingId = data.bookingId || bookingId;
+    formData.paymentId = paymentId;
+  } catch (e) {
+    // fallback if server not running
+    formData.bookingId = bookingId;
+    formData.paymentId = paymentId;
+    console.warn('Server not reachable, storing locally:', e.message);
+  }
+}
+
+// ===== SHOW CONFIRMATION =====
+function showConfirmation(paymentId) {
+  document.getElementById('bookingId').textContent = 'Booking ID: ' + (formData.bookingId || 'TH-' + Date.now().toString(36).toUpperCase());
+
+  const rows = [
+    ['Name',         formData.name],
+    ['Email',        formData.email],
+    ['Phone',        formData.phone],
+    ['Trip',         formData.icon+' '+formData.trip],
+    ['Travellers',   formData.travellers + ' person(s)'],
+    ['Amount Paid',  '₹'+formData.total.toLocaleString('en-IN')],
+    ['Payment ID',   paymentId],
+    ['Status',       '✅ Paid'],
+  ];
+
+  document.getElementById('confirmDetails').innerHTML =
+    rows.map(([k,v]) => `<div class="detail-row"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+
+  setStep(3);
+  showScreen('scConfirm');
+}
+</script>
+</body>
+</html>

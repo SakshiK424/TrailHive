@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TrailHive — Explore the World</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <a href="#home" class="logo">
+    <span class="logo-icon">⛰</span>
+    <span class="logo-text">TRAILHIVE</span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home" class="nav-link active">Home</a></li>
+    <li><a href="#events" class="nav-link">Events</a></li>
+    <li><a href="#tours" class="nav-link">Tours</a></li>
+    <li><a href="#about" class="nav-link">About</a></li>
+    <li><a href="#contact" class="nav-link">Contact</a></li>
+    <li><a href="register.html" class="nav-cta">Book Now</a></li>
+    <li><a href="admin-login.html" class="nav-admin" id="adminNavBtn"><i class="fas fa-lock"></i> Admin</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="home">
+  <div class="hero-bg">
+    <div class="hero-overlay"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">✦ Adventure Awaits ✦</div>
+    <h1 class="hero-title">Explore the<br/><em>Colourful World</em></h1>
+    <p class="hero-sub">Curated journeys across India's most breathtaking landscapes, spiritual sanctuaries, and historical wonders.</p>
+    <div class="hero-actions">
+      <a href="#events" class="btn-primary">Discover Trips</a>
+      <a href="register.html" class="btn-ghost">Book Now →</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><span></span></div>
+</header>
+
+<!-- ===== STATS ===== -->
+<section class="stats-bar">
+  <div class="stat"><span class="stat-num" data-target="500">0</span><span>+</span><p>Happy Travellers</p></div>
+  <div class="stat"><span class="stat-num" data-target="25">0</span><span>+</span><p>Destinations</p></div>
+  <div class="stat"><span class="stat-num" data-target="12">0</span><span>+</span><p>Upcoming Tours</p></div>
+  <div class="stat"><span class="stat-num" data-target="5">0</span><span>+</span><p>Years Experience</p></div>
+</section>
+
+<!-- ===== EVENTS ===== -->
+<section class="section events" id="events">
+  <div class="section-header">
+    <span class="section-tag">Upcoming</span>
+    <h2>Visiting Places</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="cards-grid">
+
+    <article class="trip-card" data-trip="Manali Adventure" data-price="4999" data-date="06 Jun 2025">
+      <div class="card-img-wrap">
+        <div class="card-img" style="background:linear-gradient(160deg,#1a1a2e,#16213e,#0f3460);">
+          <img style="height: 220px; width: 280px;" src="event1.webp" alt="">
+        </div>
+        <div class="card-img-overlay">
+          <span class="trip-tag adventure">Adventure</span>
+          <span class="trip-date">📅 06 Jun 2025</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3>Manali Expedition</h3>
+        <p>Heart-pounding mountain experiences — snow treks, river crossing, and paragliding in the Himalayas.</p>
+        <div class="card-footer">
+          <div class="price">₹4,999 <span>/person</span></div>
+          <a href="register.html?trip=Manali+Adventure&price=4999" class="card-btn">Book Now</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="trip-card" data-trip="Vrindavan Spiritual" data-price="2999" data-date="01 Jun 2025">
+      <div class="card-img-wrap">
+        <div class="card-img" style="background:linear-gradient(160deg,#2d1b69,#11998e,#38ef7d);">
+          <img style="height: 220px; width: 280px;" src="event2.webp" alt="">
+        </div>
+        <div class="card-img-overlay">
+          <span class="trip-tag spiritual">Spiritual</span>
+          <span class="trip-date">📅 01 Jun 2025</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3>Vrindavan Pilgrimage</h3>
+        <p>A soulful escape to the sacred land of Lord Krishna — temples, ghats, and divine aarti experiences.</p>
+        <div class="card-footer">
+          <div class="price">₹2,999 <span>/person</span></div>
+          <a href="register.html?trip=Vrindavan+Spiritual&price=2999" class="card-btn">Book Now</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="trip-card" data-trip="Historical India Tour" data-price="3499" data-date="15 Jun 2025">
+      <div class="card-img-wrap">
+        <div class="card-img" style="background:linear-gradient(160deg,#3d0c02,#a52a2a,#d4a017);">
+          <img style="height: 220px; width: 280px;" src="event3.avif" alt="">
+        </div>
+        <div class="card-img-overlay">
+          <span class="trip-tag historical">Historical</span>
+          <span class="trip-date">📅 15 Jun 2025</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <h3>Historical India Tour</h3>
+        <p>Walk through centuries of history — Mughal monuments, ancient forts, and the stories etched in stone.</p>
+        <div class="card-footer">
+          <div class="price">₹3,499 <span>/person</span></div>
+          <a href="register.html?trip=Historical+India+Tour&price=3499" class="card-btn">Book Now</a>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ===== EXPLORE BANNER ===== -->
+<section class="explore-banner">
+  <div class="explore-inner">
+    <h2>Explore the Colourful World Digitally</h2>
+    <p>"Digital tourism is the gateway to exploring the world without borders — where every screen becomes a window to new cultures and destinations."</p>
+    <a href="#tours" class="btn-primary">Explore More</a>
+  </div>
+</section>
+
+<!-- ===== UPCOMING TOURS ===== -->
+<section class="section tours" id="tours">
+  <div class="section-header">
+    <span class="section-tag">What's Next</span>
+    <h2>Upcoming Tours & Destinations</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="tours-grid">
+    <div class="tour-item">
+      <div class="tour-img" style="background:linear-gradient(135deg,#1a1a2e,#e94560);">
+        <img style="height: 100px; width: 120px;" src="tour1.avif" alt="">
+      </div>
+      <div class="tour-info">
+        <span class="tour-date">Jul 11, 2025</span>
+        <h4>Banaras</h4>
+        <p>Spiritual Event — Ghats, temples, and evening Ganga Aarti</p>
+        <a href="register.html?trip=Banaras+Spiritual&price=1999" class="tour-book">Register →</a>
+      </div>
+    </div>
+    <div class="tour-item">
+      <div class="tour-img" style="background:linear-gradient(135deg,#0f3460,#533483);">
+        <img style="height: 100px; width: 120px;" src="tour2.webp" alt="">
+      </div>
+      <div class="tour-info">
+        <span class="tour-date">Aug 15, 2025</span>
+        <h4>Red Fort, Delhi</h4>
+        <p>Patriotic & Cultural — Independence Day special tour</p>
+        <a href="register.html?trip=Red+Fort+Delhi&price=1499" class="tour-book">Register →</a>
+      </div>
+    </div>
+    <div class="tour-item">
+      <div class="tour-img" style="background:linear-gradient(135deg,#11998e,#38ef7d);">
+        <img style="height: 100px; width: 120px;" src="tour3.jpg" alt="">
+      </div>
+      <div class="tour-info">
+        <span class="tour-date">Oct 20, 2025</span>
+        <h4>Shimla</h4>
+        <p>Adventurous Activities — Trekking, skiing & mountain escapades</p>
+        <a href="register.html?trip=Shimla+Adventure&price=3999" class="tour-book">Register →</a>
+      </div>
+    </div>
+    <div class="tour-item">
+      <div class="tour-img" style="background:linear-gradient(135deg,#f7971e,#ffd200);">
+        <img style="height: 100px; width: 120px;" src="tour4.jpg" alt="">
+      </div>
+      <div class="tour-info">
+        <span class="tour-date">Dec 10, 2025</span>
+        <h4>Kerala Backwaters</h4>
+        <p>Nature & Wellness — Houseboat stays, Ayurveda, serene backwaters</p>
+        <a href="register.html?trip=Kerala+Backwaters&price=5999" class="tour-book">Register →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="section about" id="about">
+  <div class="section-header">
+    <span class="section-tag">Who We Are</span>
+    <h2>About TrailHive</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <h3>Crafting Unforgettable Journeys Since 2019</h3>
+      <p>TrailHive is a passion-driven travel community founded by adventure enthusiasts who believe every trail tells a story. We curate handpicked tours across India's spiritual, adventurous, and historical landscapes.</p>
+      <p>From the snow-capped Himalayas to the sun-soaked beaches of Andaman, we design journeys that connect you to the soul of every destination.</p>
+      <div class="about-features">
+        <div class="feat"><span>✦</span> Expert Local Guides</div>
+        <div class="feat"><span>✦</span> All-Inclusive Packages</div>
+        <div class="feat"><span>✦</span> 24/7 Support</div>
+        <div class="feat"><span>✦</span> Secure Payments</div>
+      </div>
+    </div>
+    <div class="about-img-grid">
+      <div class="about-img" style="background:linear-gradient(135deg,#1a1a2e,#16213e);">
+         <img style="height: 200px; width: 200px; border-top-left-radius: 50px;" src="img1.avif" alt="">
+      </div>
+      <div class="about-img" style="background:linear-gradient(135deg,#11998e,#38ef7d);">
+        <img style="height: 200px; width: 200px;" src="img2.avif" alt="">
+      </div>
+      <div class="about-img" style="background:linear-gradient(135deg,#f7971e,#ffd200);">
+        <img style="height: 200px; width: 200px;" src="img3.jpg" alt="">
+      </div>
+      <div class="about-img" style="background:linear-gradient(135deg,#2d1b69,#e94560);">
+        <img style="height: 200px; width: 200px; border-bottom-right-radius: 50px;" src="img4.jpeg" alt="">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTRIBUTOR ===== -->
+<section class="section contributors">
+  <div class="section-header">
+    <span class="section-tag">Team</span>
+    <h2>Contributors</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="contrib-grid">
+    <div class="contrib-card">
+      <div class="contrib-avatar">R</div>
+      <h4>Rohit</h4>
+      <p>Founder & Lead Developer</p>
+      <div class="contrib-links">
+        <a href="mailto:rohit99782@gmail.com"><i class="fas fa-envelope"></i></a>
+        <a href="tel:+919896368607"><i class="fas fa-phone"></i></a>
+      </div>
+    </div>
+
+    <div class="contrib-card">
+      <div class="contrib-avatar">S</div>
+      <h4>Sakshi</h4>
+      <p>Founder & Lead Developer</p>
+      <div class="contrib-links">
+        <a href="mailto:kumarisakshi0402@gmail.com"><i class="fas fa-envelope"></i></a>
+        <a href="tel:+919015334067"><i class="fas fa-phone"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="section contact" id="contact">
+  <div class="section-header">
+    <span class="section-tag">Get In Touch</span>
+    <h2>Any Questions? Feel Free to Contact</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="info-item">
+        <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div>
+          <h5>Address</h5>
+          <p>Sector-11D, Faridabad, Haryana</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon"><i class="fas fa-phone"></i></div>
+        <div>
+          <h5>Phone</h5>
+          <p>+91 9896368607</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon"><i class="fas fa-envelope"></i></div>
+        <div>
+          <h5>Email</h5>
+          <p>rohit99782@gmail.com</p>
+        </div>
+      </div>
+    </div>
+    <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="95f5d442-af01-47e1-aee9-7c6ad36c719e"/>
+      <input type="text" name="Name" placeholder="Your Name" required/>
+      <input type="email" name="E-mail" placeholder="Your Email" required/>
+      <input type="text" name="Mobile no." placeholder="Mobile Number" required/>
+      <textarea name="Message" placeholder="Your Message" rows="4" required></textarea>
+      <button type="submit" class="btn-primary">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="logo-icon">⛰</span>
+      <span class="logo-text">TRAILHIVE</span>
+      <p>Every trail tells a story.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#home">Home</a>
+      <a href="#events">Events</a>
+      <a href="#tours">Tours</a>
+      <a href="register.html">Register</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <p class="footer-copy">© 2025 TrailHive · Built by Rohit · All Rights Reserved</p>
+  </div>
+</footer>
+
+<!-- Scroll to top -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="js/main.js"></script>
+<script>
+// Smart admin button — shows Dashboard if already logged in
+(function() {
+  const btn = document.getElementById("adminNavBtn");
+  const token = sessionStorage.getItem("adminToken");
+  if (token) {
+    fetch("/api/admin/verify", { headers: { "x-admin-token": token } })
+      .then(r => r.json())
+      .then(d => {
+        if (d.success) {
+          btn.href = "admin.html";
+          btn.innerHTML = '<i class="fas fa-circle" style="font-size:0.5rem;color:#2ecc71;"></i> Dashboard';
+          btn.classList.add("logged-in");
+        }
+      }).catch(() => {});
+  }
+})();
+</script>
+</body>
+</html>

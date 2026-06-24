@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — TrailHive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="./css/admin.css"/>
+</head>
+<body>
+
+<div class="mo" id="mo" onclick="if(event.target===this)cmo()">
+  <div class="mb">
+    <button class="cm" onclick="cmo()"><i class="fas fa-times"></i></button>
+    <h3 id="moTitle">Booking Details</h3>
+    <div id="moBody"></div>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="brand">⛰ TRAILHIVE ADMIN</div>
+  <div class="topbar-right">
+    <span class="admin-badge">👤 Rohit · Admin</span>
+    <a href="index.html" class="btn-small"><i class="fas fa-globe"></i> View Site</a>
+    <button class="btn-small red" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="greeting">
+    <h2 id="greet">Welcome back 👋</h2>
+    <p id="dateStr"></p>
+  </div>
+
+  <div class="db-row">
+    <div class="dot" id="dbDot"></div>
+    <span id="dbLbl">Checking database…</span>
+  </div>
+
+  <div class="stat-grid">
+    <div class="sc"><div class="ico"><i class="fas fa-users"></i></div><div class="lb">Total Bookings</div><div class="vl" id="s1">—</div><div class="sb">All registrations</div></div>
+    <div class="sc"><div class="ico"><i class="fas fa-rupee-sign"></i></div><div class="lb">Total Revenue</div><div class="vl" id="s2">—</div><div class="sb">Via Razorpay</div></div>
+    <div class="sc"><div class="ico"><i class="fas fa-calendar-day"></i></div><div class="lb">Today</div><div class="vl" id="s3">—</div><div class="sb">Today's registrations</div></div>
+    <div class="sc"><div class="ico"><i class="fas fa-fire"></i></div><div class="lb">Top Trip</div><div class="vl" id="s4" style="font-size:1rem;margin-top:6px;">—</div><div class="sb">Most booked</div></div>
+  </div>
+
+  <div class="tw">
+    <div class="th">
+      <div class="tt">All Registrations</div>
+      <div class="ta">
+        <span class="cb" id="cb">0 bookings</span>
+        <button class="rb" onclick="loadData()"><i class="fas fa-sync-alt"></i> Refresh</button>
+      </div>
+    </div>
+    <div class="sb2">
+      <input type="text" id="si" placeholder="🔍  Search name, email, phone, trip or booking ID…" oninput="ft()"/>
+    </div>
+    <div id="tb"><div class="lw"><div class="sp"></div><p>Loading…</p></div></div>
+  </div>
+</div>
+
+<script>
+// Auth check
+const token = sessionStorage.getItem('adminToken');
+if (!token) { window.location.href='admin-login.html'; }
+const API_URL = 'http://localhost:3000';
+fetch(API_URL + '/api/admin/verify',{headers:{'x-admin-token':token}}).then(r=>r.json()).then(d=>{if(!d.success)window.location.href='admin-login.html';}).catch(()=>{});
+
+// Date
+const now = new Date();
+const hours = now.getHours();
+const greetText = hours<12?'Good Morning':hours<17?'Good Afternoon':'Good Evening';
+document.getElementById('greet').textContent = (hours<12?'Good Morning ☀️':hours<17?'Good Afternoon 🌤':'Good Evening 🌙')+', Rohit!';
+document.getElementById('dateStr').textContent = now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+let allBookings=[];
+
+async function loadData(){
+  document.getElementById('tb').innerHTML='<div class="lw"><div class="sp"></div><p>Loading…</p></div>';
+  try{
+    const [br,sr]=await Promise.all([
+      fetch(API_URL + '/api/bookings',{headers:{'x-admin-token':token}}),
+      fetch(API_URL + '/api/stats',{headers:{'x-admin-token':token}})
+    ]);
+    if(br.ok && sr.ok){document.getElementById('dbDot').className='dot ok';document.getElementById('dbLbl').textContent='✅ MongoDB connected — showing live data';}
+    else{document.getElementById('dbDot').className='dot err';document.getElementById('dbLbl').textContent='❌ Database error';}
+    const bd=await br.json(), sd=await sr.json();
+    if(sd.success){
+      document.getElementById('s1').textContent=sd.totalBookings;
+      document.getElementById('s2').textContent='₹'+(sd.totalRevenue||0).toLocaleString('en-IN');
+      document.getElementById('s3').textContent=sd.todayBookings||0;
+      const t=sd.bookingsByTrip?.sort((a,b)=>b.count-a.count)[0];
+      document.getElementById('s4').textContent=t?t._id:'—';
+    }
+    if(!bd.success||!bd.bookings.length){
+      allBookings=[];
+      document.getElementById('cb').textContent='0 bookings';
+      document.getElementById('tb').innerHTML='<div class="nd"><div class="ico">📋</div><h3>No bookings yet</h3><p>Registrations will appear here after payment.</p></div>';
+      return;
+    }
+    allBookings=bd.bookings;
+    document.getElementById('cb').textContent=allBookings.length+' bookings';
+    render(allBookings);
+  }catch(e){
+    document.getElementById('dbDot').className='dot err';
+    document.getElementById('dbLbl').textContent='❌ Cannot reach server - Run: npm start';
+    document.getElementById('tb').innerHTML='<div class="nd"><div class="ico">⚠️</div><h3>Server not running</h3><p>Run <strong>npm start</strong> in the terminal (in trailhive folder)</p><p style="margin-top:6px;">Also ensure <strong>MongoDB</strong> is running</p><p style="margin-top:6px;color:var(--gold);"><code style="background:rgba(201,168,76,0.2);padding:4px 8px;border-radius:4px;">mongod</code> for local, or check Atlas</p></div>';
+  }
+}
+
+function render(arr){
+  if(!arr.length){document.getElementById('tb').innerHTML='<div class="nd"><div class="ico">🔍</div><h3>No results</h3></div>';return;}
+  const rows=arr.map(b=>`
+    <tr>
+      <td><span class="bid">${b.bookingId}</span></td>
+      <td><strong>${b.name}</strong></td>
+      <td style="color:var(--muted);font-size:0.8rem;">${b.email}</td>
+      <td>${b.phone}</td>
+      <td>${b.icon||''} ${b.trip}</td>
+      <td style="text-align:center;">${b.travellers}</td>
+      <td><span class="amt">₹${Number(b.total).toLocaleString('en-IN')}</span></td>
+      <td><span class="badge paid">${b.paymentStatus}</span></td>
+      <td style="color:var(--muted);font-size:0.76rem;white-space:nowrap;">${new Date(b.createdAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</td>
+      <td>
+        <button class="act-btn" onclick="showDet('${b.bookingId}')"><i class="fas fa-eye"></i></button>
+        <button class="act-btn del" onclick="del('${b.bookingId}')"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>`).join('');
+  document.getElementById('tb').innerHTML=`<table><thead><tr><th>Booking ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Trip</th><th>Pax</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+function ft(){
+  const q=document.getElementById('si').value.toLowerCase();
+  render(allBookings.filter(b=>(b.name||'').toLowerCase().includes(q)||(b.email||'').toLowerCase().includes(q)||(b.phone||'').includes(q)||(b.trip||'').toLowerCase().includes(q)||(b.bookingId||'').toLowerCase().includes(q)));
+}
+
+function showDet(id){
+  const b=allBookings.find(x=>x.bookingId===id);if(!b)return;
+  document.getElementById('moTitle').textContent=(b.icon||'')+' '+b.trip;
+  document.getElementById('moBody').innerHTML=[['Booking ID',b.bookingId],['Name',b.name],['Email',b.email],['Phone',b.phone],['Age',b.age||'—'],['Address',b.address],['Trip',b.trip],['Travellers',b.travellers+' person(s)'],['Per Person','₹'+Number(b.perPerson).toLocaleString('en-IN')],['Total Paid','₹'+Number(b.total).toLocaleString('en-IN')],['Payment ID',b.paymentId],['Status',b.paymentStatus],['Notes',b.notes||'None'],['Registered',new Date(b.createdAt).toLocaleString('en-IN')]].map(([k,v])=>`<div class="mr"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+  document.getElementById('mo').classList.add('show');
+}
+function cmo(){document.getElementById('mo').classList.remove('show');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')cmo();});
+
+async function del(id){
+  if(!confirm('Delete booking '+id+'? This cannot be undone.'))return;
+  const r=await fetch(API_URL + '/api/bookings/'+id,{method:'DELETE',headers:{'x-admin-token':token}});
+  const d=await r.json();
+  if(d.success){allBookings=allBookings.filter(b=>b.bookingId!==id);render(allBookings);document.getElementById('cb').textContent=allBookings.length+' bookings';document.getElementById('s1').textContent=allBookings.length;}
+  else alert('Delete failed');
+}
+
+async function logout(){
+  await fetch(API_URL + '/api/admin/logout',{method:'POST',headers:{'x-admin-token':token}}).catch(()=>{});
+  sessionStorage.removeItem('adminToken');
+  window.location.href='admin-login.html';
+}
+
+loadData();
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login — TrailHive</title>
+  <link rel="stylesheet" href="./css/admin-logic.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+<div class="bg"></div>
+
+<div class="card">
+  <div class="header">
+    <div class="logo-wrap">🔐</div>
+    <h1>Admin Access</h1>
+    <p>TrailHive Dashboard — Authorized Only</p>
+  </div>
+
+  <div class="err-box" id="errBox">
+    <i class="fas fa-exclamation-circle"></i>
+    <span id="errMsg">Invalid credentials</span>
+  </div>
+
+  <div class="field">
+    <label>Username</label>
+    <div class="input-wrap">
+      <i class="fas fa-user"></i>
+      <input type="text" id="username" placeholder="Enter admin username" autocomplete="username"/>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Password</label>
+    <div class="input-wrap">
+      <i class="fas fa-lock"></i>
+      <input type="password" id="password" placeholder="Enter admin password" autocomplete="current-password"/>
+      <button class="toggle-pw" onclick="togglePw()" type="button" id="toggleBtn">
+        <i class="fas fa-eye" id="eyeIcon"></i>
+      </button>
+    </div>
+  </div>
+
+  <button class="btn" id="loginBtn" onclick="doLogin()">
+    <div class="spin" id="spin"></div>
+    <span id="btnText"><i class="fas fa-sign-in-alt"></i> Login to Dashboard</span>
+  </button>
+
+  <a href="index.html" class="back">← Back to TrailHive website</a>
+
+  <div class="sec-note">
+    <i class="fas fa-shield-alt" style="color:var(--gold);"></i>
+    Session expires after 8 hours automatically
+  </div>
+</div>
+
+<script>
+// ===== CHECK SERVER STATUS =====
+async function checkServer() {
+  try {
+    const res = await fetch('http://localhost:3000/api/health');
+    const data = await res.json();
+    console.log('✅ Server response:', data);
+    return { ok: true, data };
+  } catch (e) {
+    console.error('❌ Cannot reach server:', e.message);
+    return { ok: false };
+  }
+}
+
+// Display server status warning if needed
+// window.addEventListener('load', async () => {
+//   const status = await checkServer();
+//   if (!status.ok) {
+//     const errBox = document.getElementById('errBox');
+//     const errMsg = document.getElementById('errMsg');
+//     errMsg.innerHTML = '⚠️ <strong>Server not running!</strong> Run <code style="background:#444;padding:2px 6px;border-radius:3px;">npm start</code> in terminal first';
+//     errBox.classList.add('show');
+//   }
+// });
+
+// If already logged in, redirect straight to admin
+const existingToken = sessionStorage.getItem('adminToken');
+if (existingToken) {
+  fetch('http://localhost:3000/api/admin/verify', { headers: { 'x-admin-token': existingToken } })
+    .then(r => r.json())
+    .then(d => { if (d.success) window.location.href = 'admin.html'; })
+    .catch(() => {});
+}
+
+function togglePw() {
+  const pw = document.getElementById('password');
+  const icon = document.getElementById('eyeIcon');
+  if (pw.type === 'password') { pw.type = 'text'; icon.className = 'fas fa-eye-slash'; }
+  else { pw.type = 'password'; icon.className = 'fas fa-eye'; }
+}
+
+// Allow Enter key
+document.getElementById('password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+document.getElementById('username').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('password').focus();
+});
+
+async function doLogin() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const btn  = document.getElementById('loginBtn');
+  const spin = document.getElementById('spin');
+  const btnText = document.getElementById('btnText');
+  const errBox  = document.getElementById('errBox');
+  const errMsg  = document.getElementById('errMsg');
+
+  if (!username || !password) {
+    errMsg.textContent = 'Please enter both username and password';
+    errBox.classList.add('show'); return;
+  }
+
+  // Show loading
+  btn.disabled = true;
+  spin.style.display = 'block';
+  btnText.style.display = 'none';
+  errBox.classList.remove('show');
+
+  try {
+    const res  = await fetch('http://localhost:3000/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      sessionStorage.setItem('adminToken', data.token);
+      // Brief success flash then redirect
+      btn.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+      btnText.innerHTML = '<i class="fas fa-check"></i> Logging in…';
+      btnText.style.display = 'flex';
+      spin.style.display = 'none';
+      setTimeout(() => window.location.href = 'admin.html', 600);
+    } else {
+      errMsg.textContent = data.message || 'Invalid credentials';
+      errBox.classList.add('show');
+      btn.disabled = false;
+      spin.style.display = 'none';
+      btnText.style.display = 'flex';
+    }
+  } catch (err) {
+    errMsg.innerHTML = '❌ <strong>Server Error:</strong> Is it running? Run <code style="background:#444;padding:2px 6px;border-radius:3px;">npm start</code>';
+    errBox.classList.add('show');
+    btn.disabled = false;
+    spin.style.display = 'none';
+    btnText.style.display = 'flex';
+  }
+}
+</script>
+</body>
+</html>
